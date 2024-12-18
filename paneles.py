@@ -1,4 +1,3 @@
-#pensar en casos bordes
 #Asumimos que los rectangulos en un principio se colocan de la forma
 #              _______                  
 #             |       |                          
@@ -8,7 +7,7 @@
 #                 b          
 #Donde x es el largo, e y es el alto
 
-#TODO: refactorizar el codigo
+#Funcion que rellena el cuadrado xy con cuadrado cuadrados de ab
 def recorrer_cuadrado(x,y,a,b,contador):
     i=0
     j=0
@@ -19,9 +18,10 @@ def recorrer_cuadrado(x,y,a,b,contador):
             contador +=1
         i+=b
     return (i,j,contador)
+
+#Funcion que retorna el maximo numero de cuadrados de dimensiones ab que caben dentro de un
+#cuadrado de dimensiones xy
 def max_paneles(x,y,a,b):
-    i=0
-    j=0
     contador = 0
     if a==0 or b==0 or x==0 or y==0:
         print("dimensiones invalidas")
@@ -37,6 +37,7 @@ def max_paneles(x,y,a,b):
         print("no se puede colocar este cuadrado, dimensiones mas grandes que el molde")
         return
     i,j,contador=recorrer_cuadrado(x,y,a,b,contador)
+    contador_2 = contador
     #En esta parte puede que haya que llenar para x-i*b X j*a y  b*i X y-j*a. Pero no sé cual es mejor, tendremos que 
     # escoger el par que entregue un numero mayor, y si son iguales, entonces no hay problema    
     aj = j
@@ -46,9 +47,16 @@ def max_paneles(x,y,a,b):
     i,j,contador=recorrer_cuadrado(x,y2,b,a,contador)
     #vamos a revisar x-i*b X j*a
     x2 = x - bi
-    i,j,contador=recorrer_cuadrado(x2,y,b,a,contador)
-    return contador    
-
+    i,j,contador=recorrer_cuadrado(x2,y-y2,b,a,contador)
+    #caso cuando se rellena y primero
+    i,j,contador_2=recorrer_cuadrado(x2,y,b,a,contador_2)
+    #vamos a revisar x-i*b X y - j*a
+    x2 = x - bi
+    i,j,contador_2=recorrer_cuadrado(x-x2,y2,b,a,contador_2)
+    if contador>contador_2:
+        return contador
+    else:
+        return contador_2
 
 if __name__ == '__main__':   
     print(max_paneles(4,2,2,1))
